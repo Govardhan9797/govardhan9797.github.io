@@ -67,7 +67,7 @@ export const profile: Profile = {
   initials: 'GR',
   roles: ['Software Engineer', 'DevOps Engineer', 'Cloud & Kubernetes', 'Telecom BSS / OSS'],
   tagline:
-    'I deploy, automate and keep mission-critical telecom platforms running — from Kubernetes clusters to Kafka streams — for operators across four continents.',
+    'I deploy, automate and keep mission-critical telecom platforms running — from Kubernetes clusters to Kafka streams — for operators across Asia and Africa.',
   location: 'Bengaluru, India',
   openTo: 'Open to Software / DevOps roles · On-site & Hybrid',
   email: 'dandugovardhanreddy@gmail.com',
@@ -87,14 +87,14 @@ export const avatars: Avatars = {
 };
 
 export const stats: Stat[] = [
-  { value: '5', label: 'Global telecom programs' },
+  { value: '6', label: 'Global telecom programs' },
   { value: '9', label: 'Cloud certifications' },
   { value: '2+', label: 'Years at 6D Technologies' },
   { value: '3', label: 'Envs managed: Dev · UAT · Prod' },
 ];
 
 export const about: string[] = [
-  'I’m a Software Engineer at 6D Technologies, delivering Telecom OSS and Digital BSS solutions for operators such as Vodafone Idea, Tata Play Fiber, Telkomsel, CellCard and ICTA Kenya.',
+  'I’m a Software Engineer at 6D Technologies, delivering Telecom OSS and Digital BSS solutions for operators such as Singtel, Vodafone Idea, Tata Play Fiber, Telkomsel, CellCard and ICTA Kenya.',
   'My work sits where software meets operations: core Mediation modules and CDR processing, containerised microservices on Kubernetes, CI/CD with Jenkins, AWS infrastructure, and the deep-dive debugging that keeps production stable.',
   'I hold a B.E. in Electronics & Communication Engineering, and outside work I create 3D art in Blender and edit video.',
 ];
@@ -128,6 +128,7 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 export const programs: Program[] = [
+  { name: 'Singtel', region: 'Singapore' },
   { name: 'VIL Postpaid', region: 'India', flag: '🇮🇳' },
   { name: 'Tata Play Fiber', region: 'India', flag: '🇮🇳' },
   { name: 'TSEL', region: 'Indonesia', flag: '🇮🇩' },

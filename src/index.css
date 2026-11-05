@@ -175,14 +175,27 @@ h3 { font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem); font-weight: 700; lett
 
 /* AVATAR */
 .avatar, .avatar-img { display: block; width: 100%; height: auto; overflow: visible; }
-.av-hoodie { fill: var(--sub); transition: fill 0.35s; }
-.av-hood { fill: color-mix(in srgb, var(--sub) 68%, #000); }
-.av-sleeve { fill: none; stroke: var(--sub); stroke-width: 15; stroke-linecap: round; transition: stroke 0.35s; }
+.av-hood { fill: color-mix(in srgb, var(--sub) 62%, #000); }
+.av-sleeve { fill: none; stroke-width: 15; stroke-linecap: round; }
 .av-logo { fill: var(--btn-text); font: 700 13px 'JetBrains Mono', ui-monospace, Consolas, monospace; }
-.av-shadow { fill: var(--text); opacity: 0.12; transform-box: fill-box; transform-origin: center; animation: av-shadow 4s ease-in-out infinite; }
+.av-shadow { opacity: 0.35; transform-box: fill-box; transform-origin: center; animation: av-shadow 4s ease-in-out infinite; }
+:root[data-theme='dark'] .av-shadow { opacity: 0.6; }
 .av-bob { animation: av-bob 4s ease-in-out infinite; }
 @keyframes av-bob { 50% { transform: translateY(-6px); } }
-@keyframes av-shadow { 50% { transform: scaleX(0.86); opacity: 0.07; } }
+@keyframes av-shadow { 50% { transform: scaleX(0.86); opacity: 0.2; } }
+
+/* hero: tap to boop + signal waves */
+.hero-art { display: block; text-align: left; border-radius: 24px; }
+.avatar-wrap { position: relative; z-index: 1; display: block; transform-origin: 50% 90%; }
+.avatar-wrap.boop { animation: boop 0.6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes boop { 30% { transform: translateY(-14px) scale(1.04, 0.96); } 65% { transform: translateY(0) scale(0.97, 1.03); } }
+.signal { position: absolute; z-index: 0; left: 50%; bottom: 17%; width: 185%; max-width: none; transform: translateX(-50%); pointer-events: none; animation: sw-in 0.7s cubic-bezier(.2,.8,.2,1) both; }
+.signal line { stroke-width: 5.5; stroke-linecap: round; }
+.sw-dots g { stroke: none; }
+.sw-row { opacity: 0.22; animation: sw-pulse 2.8s ease-in-out infinite; }
+:root[data-theme='light'] .sw-row { opacity: 0.3; }
+@keyframes sw-pulse { 0%, 100% { opacity: 0.2; } 18% { opacity: 1; } 45% { opacity: 0.35; } }
+@keyframes sw-in { from { opacity: 0; transform: translateX(-50%) scale(0.9); } }
 .av-eye { transform-box: fill-box; transform-origin: center; animation: av-blink 5s infinite; }
 @keyframes av-blink { 0%, 93%, 99%, 100% { transform: none; } 96% { transform: scaleY(0.08); } }
 .av-wave { transform-box: view-box; transform-origin: 142px 178px; animation: av-wave 2.6s ease-in-out infinite; }
@@ -212,7 +225,8 @@ h3 { font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem); font-weight: 700; lett
 .peek.in .avatar { transform: translateY(4%); }
 
 @media (prefers-reduced-motion: reduce) {
-  .av-bob, .av-shadow, .av-eye, .av-wave, .av-type, .av-letter, .spark, .bubble { animation: none !important; }
+  .av-bob, .av-shadow, .av-eye, .av-wave, .av-type, .av-letter, .spark, .bubble, .avatar-wrap, .signal { animation: none !important; }
+  .sw-row { animation: none !important; opacity: 0.55; }
   .av-steam, .av-heart { display: none; }
 }
 

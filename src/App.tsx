@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from 'react';
 import { profile, avatars, stats, about, skillGroups, programs, experience, certifications, education, type Role } from './data';
 import Avatar, { type AvatarProps } from './Avatar';
+import SignalWaves, { type SignalStyle } from './SignalWaves';
 
 type Theme = 'dark' | 'light';
 
@@ -9,22 +10,33 @@ function Art({ src, ...props }: AvatarProps & { src?: string }) {
   return src ? <img className="avatar-img" src={src} alt="Avatar of Govardhan" /> : <Avatar {...props} />;
 }
 
+const SIGNALS: SignalStyle[] = ['dots', 'dashes', 'bars'];
+const GREETINGS = ['Hey there! 👋 Tap me', 'Switching signal… 📡', 'Let’s build something! 🚀'];
+
+/* Hero avatar: tap to "boop" it, change the greeting and cycle the signal style */
 function HeroArt() {
-  const [hover, setHover] = useState(false);
+  const [step, setStep] = useState(0);
+  const [boop, setBoop] = useState(false);
+  const onTap = () => {
+    setStep((s) => s + 1);
+    setBoop(false);
+    requestAnimationFrame(() => setBoop(true));
+  };
   return (
-    <div
-      className="hero-art"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onClick={() => setHover((h) => !h)}
-    >
-      <span className="bubble" key={hover ? 'b' : 'a'}>{hover ? 'Let’s build something! 🚀' : 'Hey there! 👋'}</span>
+    <button type="button" className="hero-art" onClick={onTap} aria-label="Say hi to the avatar and change the signal style">
+      <SignalWaves variant={SIGNALS[step % SIGNALS.length]} />
+      <span className="bubble" key={step}>{GREETINGS[step % GREETINGS.length]}</span>
       <span className="spark s1">✦</span>
       <span className="spark s2">✦</span>
       <span className="spark s3">✦</span>
       <span className="spark s4">✦</span>
-      <Art src={avatars.hero} pose="wave" track />
-    </div>
+      <span
+        className={`avatar-wrap ${boop ? 'boop' : ''}`}
+        onAnimationEnd={(e) => { if (e.animationName === 'boop') setBoop(false); }}
+      >
+        <Art src={avatars.hero} pose="wave" track />
+      </span>
+    </button>
   );
 }
 
