@@ -4,10 +4,10 @@ import { useEffect, useId, useRef } from 'react';
   Original chibi developer avatar with soft 3D "clay" shading:
   gradients for volume, blurred shadows for depth, and specular highlights.
   Drawn in SVG so it stays sharp at any size, follows the site theme and animates.
-  Poses: 'wave' (hero) · 'laptop' (about) · 'mail' (contact) · 'peek' (footer)
+  Poses: 'sit' (hero) · 'wave' · 'laptop' (about) · 'mail' (contact) · 'peek' · 'hang' (footer, upside down)
 */
 
-export type Pose = 'wave' | 'laptop' | 'mail' | 'peek';
+export type Pose = 'sit' | 'wave' | 'laptop' | 'mail' | 'peek' | 'hang';
 
 export interface AvatarProps {
   pose?: Pose;
@@ -51,17 +51,18 @@ export default function Avatar({ pose = 'wave', track = false, label }: AvatarPr
         const dy = e.clientY - (r.top + r.height * 0.42);
         const d = Math.hypot(dx, dy) || 1;
         const k = Math.min(1, d / 260);
-        const tx = ((dx / d) * 2.8 * k).toFixed(2);
-        const ty = ((dy / d) * 2.4 * k).toFixed(2);
+        const flip = pose === 'hang' ? -1 : 1; // drawn upside down, so mirror the gaze
+        const tx = ((dx / d) * 2.8 * k * flip).toFixed(2);
+        const ty = ((dy / d) * 2.4 * k * flip).toFixed(2);
         look.current.forEach((g) => g && g.setAttribute('transform', `translate(${tx} ${ty})`));
       });
     };
     window.addEventListener('pointermove', onMove, { passive: true });
     return () => { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(raf); };
-  }, [track]);
+  }, [track, pose]);
 
   const wink = pose === 'mail';
-  const mouthOpen = pose === 'wave' || pose === 'mail';
+  const mouthOpen = pose === 'wave' || pose === 'sit' || pose === 'mail' || pose === 'hang';
   const restLook = pose === 'laptop' ? 'translate(0 2.5)' : undefined;
 
   const defs = (
@@ -183,6 +184,26 @@ export default function Avatar({ pose = 'wave', track = false, label }: AvatarPr
     <circle className={className} cx={cx} cy={cy} r={r} fill={url('skin')} />
   );
 
+  if (pose === 'hang') {
+    // drawn upright, rotated 180° by CSS: torso at the top, arms dangling past the head
+    return (
+      <svg ref={svgRef} className="avatar" viewBox="36 14 148 198" role="img" aria-label={label || 'Avatar hanging upside down'}>
+        {defs}
+        <rect x="103" y="144" width="14" height="18" fill={url('skinDark')} />
+        <path fill={url('hood')} d={HOODIE} />
+        <path className="av-hood" d="M88 162 Q110 182 132 162 Q126 172 110 175 Q94 172 88 162Z" />
+        <path d="M104 172 L102 189 M116 172 L118 189" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity=".9" />
+        <circle cx="102" cy="190" r="2.3" fill="#fff" />
+        <circle cx="118" cy="190" r="2.3" fill="#fff" />
+        {head}
+        <path className="av-sleeve" stroke={url('hood')} d="M80 178 Q58 152 58 112" />
+        <path className="av-sleeve" stroke={url('hood')} d="M140 178 Q162 152 162 112" />
+        {hand(58, 104, 9)}
+        {hand(162, 104, 9)}
+      </svg>
+    );
+  }
+
   if (pose === 'peek') {
     return (
       <svg ref={svgRef} className="avatar" viewBox="48 14 124 126" role="img" aria-label={label || 'Avatar peeking'}>
@@ -201,6 +222,23 @@ export default function Avatar({ pose = 'wave', track = false, label }: AvatarPr
       <ellipse cx="97" cy="242" rx="11.5" ry="6.5" fill={url('white')} />
       <ellipse cx="123" cy="242" rx="11.5" ry="6.5" fill={url('white')} />
       <path d="M86 244.5 Q97 249 108 244.5 M112 244.5 Q123 249 134 244.5" stroke="#aab1c1" strokeWidth="1.6" fill="none" />
+    </g>
+  );
+
+  // cross-legged: thighs as thick rounded strokes, shoes tucked in front
+  const sitLegs = (
+    <g>
+      <path className="av-leg" stroke={url('pants')} d="M56 226 Q84 248 116 242" />
+      <path className="av-leg" stroke={url('pants')} d="M164 226 Q136 248 104 242" />
+      <ellipse cx="60" cy="219" rx="10" ry="5" fill="#fff" opacity=".1" />
+      <ellipse cx="160" cy="219" rx="10" ry="5" fill="#fff" opacity=".1" />
+    </g>
+  );
+  const sitShoes = (
+    <g>
+      <ellipse cx="96" cy="246" rx="13" ry="7.5" fill={url('white')} transform="rotate(-14 96 246)" />
+      <ellipse cx="124" cy="246" rx="13" ry="7.5" fill={url('white')} transform="rotate(14 124 246)" />
+      <path d="M84 249 Q95 255 107 250 M113 250 Q125 255 136 249" stroke="#aab1c1" strokeWidth="1.6" fill="none" />
     </g>
   );
 
@@ -224,11 +262,25 @@ export default function Avatar({ pose = 'wave', track = false, label }: AvatarPr
   return (
     <svg ref={svgRef} className="avatar" viewBox="0 0 220 258" role="img" aria-label={label || 'Avatar of Govardhan'}>
       {defs}
-      <ellipse className="av-shadow" cx="110" cy="249" rx="50" ry="7" fill="#000" filter={url('softer')} />
-      <g className="av-bob">
-        {pose !== 'laptop' && legs}
+      <ellipse className="av-shadow" cx="110" cy="250" rx={pose === 'sit' ? 80 : 50} ry="7" fill="#000" filter={url('softer')} />
+      <g className={pose === 'sit' ? 'av-breathe' : 'av-bob'}>
+        {pose === 'sit' && sitLegs}
+        {pose !== 'laptop' && pose !== 'sit' && legs}
         {body}
+        {pose === 'sit' && sitShoes}
         {head}
+
+        {pose === 'sit' && (
+          <g>
+            {sleeve('M78 178 Q62 196 58 213')}
+            {hand(57, 216)}
+            <g className="av-wave">
+              {sleeve('M142 178 Q158 166 163 146')}
+              {hand(164, 137, 9)}
+              <path d="M158 131 l-3 -6 M163 129 l-1 -7 M168 130 l1 -6" stroke="#e4a979" strokeWidth="4" strokeLinecap="round" />
+            </g>
+          </g>
+        )}
 
         {pose === 'wave' && (
           <g>

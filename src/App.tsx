@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from 'react';
 import { profile, avatars, stats, about, skillGroups, programs, experience, certifications, education, type Role } from './data';
 import Avatar, { type AvatarProps } from './Avatar';
-import SignalWaves, { type SignalStyle } from './SignalWaves';
+import SignalWaves from './SignalWaves';
+import Ribbon, { type RibbonStyle } from './Ribbon';
+import Logo from './Logo';
+import Footer from './Footer';
+import { SunMoonIcon, SoundIcon, GitHubIcon, LinkedInIcon, MenuIcon } from './Icons';
+import { blip, isSoundOn, setSoundOn } from './sound';
 
 type Theme = 'dark' | 'light';
 
@@ -10,21 +15,23 @@ function Art({ src, ...props }: AvatarProps & { src?: string }) {
   return src ? <img className="avatar-img" src={src} alt="Avatar of Govardhan" /> : <Avatar {...props} />;
 }
 
-const SIGNALS: SignalStyle[] = ['dots', 'dashes', 'bars'];
+const BACKDROPS: (RibbonStyle | 'signal')[] = ['twist', 'dots', 'signal'];
 const GREETINGS = ['Hey there! 👋 Tap me', 'Switching signal… 📡', 'Let’s build something! 🚀'];
 
-/* Hero avatar: tap to "boop" it, change the greeting and cycle the signal style */
+/* Hero avatar: tap to "boop" it, change the greeting and cycle the backdrop */
 function HeroArt() {
   const [step, setStep] = useState(0);
   const [boop, setBoop] = useState(false);
+  const backdrop = BACKDROPS[step % BACKDROPS.length];
   const onTap = () => {
+    blip('pop');
     setStep((s) => s + 1);
     setBoop(false);
     requestAnimationFrame(() => setBoop(true));
   };
   return (
-    <button type="button" className="hero-art" onClick={onTap} aria-label="Say hi to the avatar and change the signal style">
-      <SignalWaves variant={SIGNALS[step % SIGNALS.length]} />
+    <button type="button" className="hero-art" onClick={onTap} aria-label="Say hi to the avatar and change the backdrop">
+      {backdrop === 'signal' ? <SignalWaves variant="dashes" /> : <Ribbon variant={backdrop} />}
       <span className="bubble" key={step}>{GREETINGS[step % GREETINGS.length]}</span>
       <span className="spark s1">✦</span>
       <span className="spark s2">✦</span>
@@ -34,7 +41,7 @@ function HeroArt() {
         className={`avatar-wrap ${boop ? 'boop' : ''}`}
         onAnimationEnd={(e) => { if (e.animationName === 'boop') setBoop(false); }}
       >
-        <Art src={avatars.hero} pose="wave" track />
+        <Art src={avatars.hero} pose="sit" track />
       </span>
     </button>
   );
@@ -96,7 +103,7 @@ function Job({ e }: { e: Role }) {
       <p className="sub">{e.company} · {e.place}{e.current && <span className="now">current</span>}</p>
       <ul className="points">{shown.map((p) => <li key={p}>{p}</li>)}</ul>
       {e.points.length > 2 && (
-        <button className="more" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <button className="more" onClick={() => { blip('tap'); setOpen(!open); }} aria-expanded={open}>
           {open ? 'Show less' : `Show ${e.points.length - 2} more`}
           <span className={`arrow ${open ? 'up' : ''}`}>↓</span>
         </button>
@@ -111,6 +118,22 @@ export default function App() {
   });
   const [menu, setMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [sound, setSound] = useState(isSoundOn);
+
+  const toggleSound = () => {
+    const next = !sound;
+    setSoundOn(next);
+    setSound(next);
+    blip(next ? 'on' : 'off', true);
+  };
+  const toggleTheme = () => {
+    blip(theme === 'dark' ? 'on' : 'off');
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+  const toggleMenu = () => {
+    blip('tap');
+    setMenu(!menu);
+  };
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -132,22 +155,25 @@ export default function App() {
     <>
       <header className={`top ${scrolled ? 'scrolled' : ''}`}>
         <div className="bar">
-          <a href="#top" className="brand" onClick={close}>
-            Govardhan<span className="brand-dot">.</span>
-          </a>
+          <Logo onClick={close} />
           <nav className={`nav ${menu ? 'open' : ''}`} aria-label="Main">
             {NAV.map((n) => <a key={n} href={`#${n.toLowerCase()}`} onClick={close}>{n}</a>)}
+            <div className="nav-social">
+              <a className="tool" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub"><GitHubIcon /></a>
+              <a className="tool" href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /></a>
+            </div>
           </nav>
           <div className="tools">
-            <button className="tool" aria-label="Toggle colour theme" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-              {theme === 'dark' ? (
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-              ) : (
-                <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-              )}
+            <button className="tool" onClick={toggleSound} aria-pressed={sound} aria-label={sound ? 'Turn sounds off' : 'Turn sounds on'} title={sound ? 'Sounds on' : 'Sounds off'}>
+              <SoundIcon on={sound} />
             </button>
-            <button className={`tool burger ${menu ? 'x' : ''}`} aria-label="Menu" aria-expanded={menu} onClick={() => setMenu(!menu)}>
-              <svg viewBox="0 0 24 24"><path className="l1" d="M4 7h16" /><path className="l2" d="M4 12h16" /><path className="l3" d="M4 17h16" /></svg>
+            <button className="tool" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} title={theme === 'dark' ? 'Light mode' : 'Dark mode'}>
+              <SunMoonIcon dark={theme === 'dark'} />
+            </button>
+            <a className="tool desk-only" href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub"><GitHubIcon /></a>
+            <a className="tool desk-only" href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn"><LinkedInIcon /></a>
+            <button className="tool burger" aria-label="Menu" aria-expanded={menu} onClick={toggleMenu}>
+              <MenuIcon open={menu} />
             </button>
           </div>
         </div>
@@ -249,10 +275,7 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="footer">
-        <Reveal className="peek" aria-hidden="true"><Avatar pose="peek" track /></Reveal>
-        <div className="wrap">© {new Date().getFullYear()} {profile.name}. Made with care in Bengaluru.</div>
-      </footer>
+      <Footer />
     </>
   );
 }
