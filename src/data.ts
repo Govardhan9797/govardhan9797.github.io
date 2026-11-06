@@ -55,6 +55,10 @@ export interface Certification {
   name: string;
   issuer: string;
   date: string;
+  /** Credential / verification link. Leave '' and the entry shows as plain text until you add one. */
+  url: string;
+  /** Badge image file in public/badges/. Omit it and a badge tile is drawn from the issuer and name. */
+  badge?: string;
 }
 
 export interface Education {
@@ -189,16 +193,52 @@ export const experience: Role[] = [
   },
 ];
 
+// ✏️ Paste each credential's verification link into `url`. Entries with a link become
+//    clickable in both the Badges grid and the Certifications list.
 export const certifications: Certification[] = [
-  { name: 'Manage Kubernetes in Google Cloud', issuer: 'Google', date: 'Aug 2026' },
-  { name: 'Implement CI/CD Pipelines on Google Cloud', issuer: 'Google', date: 'Aug 2026' },
-  { name: 'Monitoring in Google Cloud', issuer: 'Google', date: 'Aug 2026' },
-  { name: 'Implement Cloud Storage & Data Protection', issuer: 'Google', date: 'Aug 2026' },
-  { name: 'Analyze Sentiment with Natural Language API', issuer: 'Google', date: 'Aug 2026' },
-  { name: 'Build Infrastructure with Terraform on Google Cloud', issuer: 'Google', date: 'Jul 2026' },
-  { name: 'Build a Data Warehouse with BigQuery', issuer: 'Google', date: 'Jul 2026' },
-  { name: 'App Building with AppSheet', issuer: 'Google', date: 'Jul 2026' },
-  { name: 'MongoDB Overview: Core Concepts & Architecture', issuer: 'MongoDB', date: 'Sep 2026' },
+  {
+    name: 'MongoDB Overview: Core Concepts & Architecture', issuer: 'MongoDB', date: 'Sep 2026',
+    url: '', // ← paste your MongoDB credential link
+  },
+  {
+    name: 'Manage Kubernetes in Google Cloud', issuer: 'Google Cloud', date: 'Aug 2026',
+    url: 'https://www.credly.com/badges/697efa7e-c33f-4203-b304-789e0f6cd5eb',
+    badge: 'badges/manage-kubernetes-in-google-cloud.png',
+  },
+  {
+    name: 'Implement CI/CD Pipelines on Google Cloud', issuer: 'Google Cloud', date: 'Aug 2026',
+    url: 'https://www.credly.com/badges/4ce3375a-64f4-412d-89d1-421df98e490a',
+    badge: 'badges/implement-ci-cd-pipelines-on-google-cloud.png',
+  },
+  {
+    name: 'Monitoring in Google Cloud', issuer: 'Google Cloud', date: 'Aug 2026',
+    url: 'https://www.credly.com/badges/9ac40221-e053-4ca4-983e-7ea5a5dd2efa',
+    badge: 'badges/monitoring-in-google-cloud.png',
+  },
+  {
+    name: 'Analyze Sentiment with Natural Language API', issuer: 'Google Cloud', date: 'Aug 2026',
+    url: 'https://www.credly.com/badges/80e3227a-5d50-451a-a0e0-c95270816009',
+    badge: 'badges/analyze-sentiment-with-natural-language-api.png',
+  },
+  {
+    name: 'Implement Cloud Storage & Data Protection', issuer: 'Google Cloud', date: 'Aug 2026',
+    url: '', // ← paste your credential link (and add its badge image to public/badges/ if you like)
+  },
+  {
+    name: 'Build a Data Warehouse with BigQuery', issuer: 'Google Cloud', date: 'Jul 2026',
+    url: 'https://www.credly.com/badges/7a544a23-c1c0-4f0c-a087-2082c6b142ed',
+    badge: 'badges/build-a-data-warehouse-with-bigquery.png',
+  },
+  {
+    name: 'Build Infrastructure with Terraform on Google Cloud', issuer: 'Google Cloud', date: 'Jul 2026',
+    url: 'https://www.credly.com/badges/c2de1b6a-8366-4174-ac67-236ed1ef1e18',
+    badge: 'badges/build-infrastructure-with-terraform-on-google-cloud.png',
+  },
+  {
+    name: 'App Building with AppSheet', issuer: 'Google Cloud', date: 'Jul 2026',
+    url: 'https://www.credly.com/badges/29209079-6007-4d1f-985b-6214b955ceb4',
+    badge: 'badges/app-building-with-appsheet.png',
+  },
 ];
 
 export const education: Education[] = [

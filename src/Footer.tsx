@@ -14,7 +14,7 @@ function greeting(): string {
   return 'Good night! ✨';
 }
 
-const EXPLORE = ['About', 'Experience', 'Skills', 'Certifications', 'Contact'];
+const EXPLORE = ['About', 'Experience', 'Skills', 'Badges', 'Certifications', 'Contact'];
 
 export default function Footer() {
   const [hello] = useState(greeting);

@@ -5,6 +5,7 @@ import SignalWaves from './SignalWaves';
 import Ribbon, { type RibbonStyle } from './Ribbon';
 import Logo from './Logo';
 import Footer from './Footer';
+import Badges from './Badges';
 import { SunMoonIcon, SoundIcon, GitHubIcon, LinkedInIcon, MenuIcon } from './Icons';
 import { blip, isSoundOn, setSoundOn } from './sound';
 
@@ -55,7 +56,7 @@ function HeroArt() {
   );
 }
 
-const NAV = ['About', 'Experience', 'Skills', 'Certifications', 'Contact'];
+const NAV = ['About', 'Experience', 'Skills', 'Badges', 'Certifications', 'Contact'];
 
 interface RevealProps {
   children: ReactNode;
@@ -242,12 +243,26 @@ export default function App() {
             </div>
           </Section>
 
+          <Section id="badges" label="Badges">
+            <Reveal as="p" className="badges-hint">Hover or tap a badge to verify it.</Reveal>
+            <Reveal><Badges items={certifications} /></Reveal>
+          </Section>
+
           <Section id="certifications" label="Certifications">
             <Reveal as="ul" className="list">
               {certifications.map((c) => (
                 <li key={c.name}>
-                  <span className="name">{c.name}</span>
-                  <span className="meta">{c.issuer} · {c.date}</span>
+                  {c.url ? (
+                    <a className="cert-link" href={c.url} target="_blank" rel="noreferrer" onClick={() => blip('tap')}>
+                      <span className="name"><span className="cert-text">{c.name}</span><span className="cert-arrow" aria-hidden="true">↗</span></span>
+                      <span className="meta">{c.issuer} · {c.date}</span>
+                    </a>
+                  ) : (
+                    <>
+                      <span className="name">{c.name}</span>
+                      <span className="meta">{c.issuer} · {c.date}</span>
+                    </>
+                  )}
                 </li>
               ))}
             </Reveal>
