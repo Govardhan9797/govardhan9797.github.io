@@ -216,6 +216,9 @@ h3 { font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem); font-weight: 700; lett
 
 /* AVATAR */
 .avatar, .avatar-img { display: block; width: 100%; height: auto; overflow: visible; }
+.avatar-pair { display: grid; }
+.avatar-pair > img { grid-area: 1 / 1; transition: opacity 0.35s; }
+:root[data-theme='dark'] .avatar-pair .for-light, :root[data-theme='light'] .avatar-pair .for-dark { opacity: 0; }
 .av-hood { fill: color-mix(in srgb, var(--sub) 62%, #000); }
 .av-sleeve { fill: none; stroke-width: 15; stroke-linecap: round; }
 .av-logo { fill: var(--btn-text); font: 700 13px 'JetBrains Mono', ui-monospace, Consolas, monospace; }
@@ -268,11 +271,23 @@ h3 { font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem); font-weight: 700; lett
 .ribbon { position: absolute; z-index: 0; left: -22%; bottom: 10%; width: 240%; max-width: none; overflow: visible; pointer-events: none; animation: rb-in 0.8s cubic-bezier(.2,.8,.2,1) both; }
 .ribbon line { stroke-width: 13; stroke-linecap: round; }
 .rb-dots g { stroke: none; }
-.rb-mark { transform-box: fill-box; transform-origin: center; }
-.rb-twist .rb-mark { animation: rb-twist 5s linear infinite; }
-.rb-dots .rb-mark { animation: rb-pop 5s ease-in-out infinite; }
-@keyframes rb-twist { to { transform: rotate(180deg); } }
-@keyframes rb-pop { 0%, 100% { transform: scale(0.3); } 50% { transform: scale(1); } }
+/* Idle motion animates --spin / --pop; the pointer sets --w (closeness 0..1) and --aim (turn toward it).
+   Registered properties so they can be animated, transitioned and combined inside transform. */
+@property --spin { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --aim { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --pop { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --w { syntax: '<number>'; inherits: false; initial-value: 0; }
+.rb-mark { transform-box: fill-box; transform-origin: center; transition: --w 0.3s ease-out; }
+.rb-twist .rb-mark {
+  animation: rb-twist 5s linear infinite;
+  transform: rotate(calc(var(--spin) * (1 - var(--w)) + var(--aim) * var(--w))) scale(calc(1 + var(--w) * 0.4));
+}
+.rb-dots .rb-mark {
+  animation: rb-pop 5s ease-in-out infinite;
+  transform: scale(calc(var(--pop) * (1 - var(--w)) + 1.7 * var(--w)));
+}
+@keyframes rb-twist { to { --spin: 180deg; } }
+@keyframes rb-pop { 0%, 100% { --pop: 0.3; } 50% { --pop: 1; } }
 @keyframes rb-in { from { opacity: 0; transform: translateY(24px) scale(0.96); } }
 
 /* FOOTER: wavy top, hanging avatar, link columns */

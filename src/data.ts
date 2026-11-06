@@ -15,10 +15,13 @@ export interface Profile {
   resume: string;
 }
 
+/** One image for both themes, or a light/dark pair that swaps with the theme. '' = built-in illustration. */
+export type AvatarImage = string | { light: string; dark: string };
+
 export interface Avatars {
-  hero: string;
-  about: string;
-  contact: string;
+  hero: AvatarImage;
+  about: AvatarImage;
+  contact: AvatarImage;
 }
 
 export interface Stat {
@@ -77,8 +80,10 @@ export const profile: Profile = {
   resume: 'resume.pdf', // served from public/resume.pdf
 };
 
-// Optional: use your own PNGs (e.g. your Bitmoji or an anime avatar made from your photo).
-// Upload the PNG next to index.html on GitHub and put its file name here, e.g. 'hero.png'.
+// Optional: use your own avatar pictures (e.g. a 3D render of yourself made in Blender).
+// 1. Put the images in the repo's public/ folder (transparent PNG or WebP, ~800px wide).
+// 2. Set the file name here. A single image:      hero: 'me.webp'
+//    Or a pair that swaps with the theme:          hero: { light: 'me-light.webp', dark: 'me-dark.webp' }
 // Leave '' to use the built-in animated illustration.
 export const avatars: Avatars = {
   hero: '',

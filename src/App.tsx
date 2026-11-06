@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ElementType, type ReactNode } from 'react';
-import { profile, avatars, stats, about, skillGroups, programs, experience, certifications, education, type Role } from './data';
+import { profile, avatars, stats, about, skillGroups, programs, experience, certifications, education, type Role, type AvatarImage } from './data';
 import Avatar, { type AvatarProps } from './Avatar';
 import SignalWaves from './SignalWaves';
 import Ribbon, { type RibbonStyle } from './Ribbon';
@@ -11,8 +11,16 @@ import { blip, isSoundOn, setSoundOn } from './sound';
 type Theme = 'dark' | 'light';
 
 /* Built-in animated avatar, or your own PNG if one is set in data.ts */
-function Art({ src, ...props }: AvatarProps & { src?: string }) {
-  return src ? <img className="avatar-img" src={src} alt="Avatar of Govardhan" /> : <Avatar {...props} />;
+function Art({ src, ...props }: AvatarProps & { src?: AvatarImage }) {
+  if (!src) return <Avatar {...props} />;
+  if (typeof src === 'string') return <img className="avatar-img" src={src} alt="Avatar of Govardhan" decoding="async" />;
+  // light/dark pair: both stay in the DOM and CSS shows the one matching the theme (no flash on toggle)
+  return (
+    <span className="avatar-pair">
+      <img className="avatar-img for-light" src={src.light} alt="Avatar of Govardhan" decoding="async" />
+      <img className="avatar-img for-dark" src={src.dark} alt="" aria-hidden="true" decoding="async" />
+    </span>
+  );
 }
 
 const BACKDROPS: (RibbonStyle | 'signal')[] = ['twist', 'dots', 'signal'];
