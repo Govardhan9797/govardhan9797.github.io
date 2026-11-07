@@ -97,7 +97,7 @@ export const avatars: Avatars = {
 
 export const stats: Stat[] = [
   { value: '6', label: 'Global telecom programs' },
-  { value: '9', label: 'Cloud certifications' },
+  { value: '10', label: 'Certifications & badges' },
   { value: '2+', label: 'Years at 6D Technologies' },
   { value: '3', label: 'Envs managed: Dev · UAT · Prod' },
 ];
@@ -196,6 +196,11 @@ export const experience: Role[] = [
 // ✏️ Paste each credential's verification link into `url`. Entries with a link become
 //    clickable in both the Badges grid and the Certifications list.
 export const certifications: Certification[] = [
+  {
+    name: 'Agentic AI Certified Foundations Associate', issuer: 'Oracle', date: 'Oct 2026',
+    url: 'https://catalog-education.oracle.com/ords/certview/sharebadge?id=BE77034DAF1C9439E15A212D77DB179DD8C2339C8D705D82EBB1238CB6AF63A8',
+    badge: 'badges/oracle-agentic-ai-foundations-associate.png',
+  },
   {
     name: 'MongoDB Overview: Core Concepts & Architecture', issuer: 'MongoDB', date: 'Sep 2026',
     url: '', // ← paste your MongoDB credential link

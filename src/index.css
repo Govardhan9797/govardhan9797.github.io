@@ -220,7 +220,7 @@ a.badge-card:hover, a.badge-card:focus-visible {
 }
 a.badge-card:active { transform: scale(0.95); transition-duration: 0.08s; }
 .badge-art { position: relative; display: block; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: #fff; transform: translateZ(26px); }
-.badge-art img { display: block; width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s cubic-bezier(.3,1.6,.5,1); }
+.badge-art img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s cubic-bezier(.3,1.6,.5,1); }
 a.badge-card:hover .badge-art img { transform: scale(1.06); }
 .glare { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.25s; background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.7), transparent 55%); mix-blend-mode: soft-light; }
 a.badge-card:hover .glare { opacity: 1; }
